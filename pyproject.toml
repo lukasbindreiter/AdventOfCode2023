@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "advent-of-code"
+version = "0.1.0"
+description = ""
+authors = ["Lukas Bindreiter"]
+readme = "README.md"
+packages = [{ include = "aoc" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+numpy = "*"
+scipy = "*"
+matplotlib = "*"
+advent-of-code-data = "*"
+tqdm = "*"
+numba = "*"
+advent-of-code-ocr = "*"
+parse = "*"
+networkx = "*"
+shapely = "*"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+ruff = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
