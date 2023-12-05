@@ -61,8 +61,8 @@ def part2(nums: list[int], conversions: list[list[tuple[range, int]]]):
                             intersection.stop + offset,
                         )
                     )
-                    before = range(r.start, intersection.start)
 
+                    before = range(r.start, intersection.start)
                     if before:
                         ranges.append(before)
 
