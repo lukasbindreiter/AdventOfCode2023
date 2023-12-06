@@ -15,12 +15,45 @@ def parse(data: str) -> tuple[list[int], list[int]]:
 
 
 @jit(nopython=True)
-def _count_wins(time: int, distance: int) -> int:
+def _count_wins_bruteforce(time: int, distance: int) -> int:
     wins = 0
     for hold in range(1, time):  # no need to check outcomes with 0
         if (time - hold) * hold > distance:
             wins += 1
     return wins
+
+
+def _count_wins(time: int, distance: int) -> int:
+    """
+    We want to solve for:
+
+    (time - hold) * hold = distance
+    time * hold - hold^2 = distance
+    hold^2 - time * hold + distance = 0
+
+    is the same as:
+
+    x^2 + p*x + q = 0
+    with:
+      x = hold
+      p = -time
+      q = distance
+
+    solving for x:
+
+    x1,2 = -(p/2) +- sqrt((p/2)^2 - q)
+    """
+
+    p_half = -time / 2
+    q = distance
+
+    x_1 = -p_half + np.sqrt(p_half**2 - q)
+    x_2 = -p_half - np.sqrt(p_half**2 - q)
+
+    min_hold = int(np.ceil(x_2 + 0.01))  # round up
+    max_hold = int(np.floor(x_1 - 0.01))  # round down
+
+    return max_hold - min_hold + 1
 
 
 def part1(times: list[int], distances: list[int]) -> int:
