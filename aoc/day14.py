@@ -46,6 +46,34 @@ def part1(platform: np.ndarray) -> int:
     return calc_load(round_rocks)
 
 
+def tilt(
+    round_rocks: set[complex],
+    cube_rocks: set[complex],
+    direction: tuple[complex, Callable[[set[complex]], list[complex]]],
+) -> set[complex]:
+    direction_vector, sort_function = direction
+
+    moved_any = True
+
+    while moved_any:
+        moved_any = False
+        moved_round_rocks = set()
+        for rock in sort_function(round_rocks):
+            # check if we can move this rock (no collision)
+            new_position = rock + direction_vector
+            if new_position not in cube_rocks and new_position not in moved_round_rocks:
+                rock = new_position
+                moved_any = True
+            moved_round_rocks.add(rock)
+        round_rocks = moved_round_rocks
+
+    return round_rocks
+
+
+def calc_load(rocks: set[complex]) -> int:
+    return int(sum(rock.real for rock in rocks))
+
+
 def part2(platform: np.ndarray) -> int:
     round_rocks, cube_rocks = coords(platform)
 
@@ -86,36 +114,6 @@ def find_cycle(round_rocks: set[complex], cube_rocks: set[complex]) -> tuple[int
 
         seen_states[current_hash] = cycles
 
-    return 0, 0
-
-
-def tilt(
-    round_rocks: set[complex],
-    cube_rocks: set[complex],
-    direction: tuple[complex, Callable[[set[complex]], list[complex]]],
-) -> set[complex]:
-    direction_vector, sort_function = direction
-
-    moved_any = True
-
-    while moved_any:
-        moved_any = False
-        moved_round_rocks = set()
-        for rock in sort_function(round_rocks):
-            # check if we can move this rock (no collision)
-            new_position = rock + direction_vector
-            if new_position not in cube_rocks and new_position not in moved_round_rocks:
-                rock = new_position
-                moved_any = True
-            moved_round_rocks.add(rock)
-        round_rocks = moved_round_rocks
-
-    return round_rocks
-
-
-def calc_load(rocks: set[complex]) -> int:
-    return int(sum(rock.real for rock in rocks))
-
 
 def rock_hash(rocks: set[complex]) -> int:
     return hash(tuple((int(rock.real), int(rock.imag)) for rock in rocks))
@@ -140,24 +138,6 @@ O.#..O.#.#
 .......O..
 #....###..
 #OO..#....
-    """.strip()
-    )
-
-
-@pytest.fixture()
-def example_input2():
-    return parse(
-        """
-.....#....
-....#....#
-.....##...
-...#......
-........#.
-..#....#.#
-.....#....
-..........
-#....###..
-#....#....
     """.strip()
     )
 
