@@ -28,18 +28,11 @@ def part2(lenses) -> int:
     boxes: dict[int, dict[str, int]] = defaultdict(dict)
 
     for op in lenses:
-        if "-" in op:
-            lens = op[:-1]
-            box = calc_hash(lens)
-            if lens in boxes[box]:
-                del boxes[box][lens]
-        else:
-            assert "=" in op
-            lens, focal_length = op.split("=")
-            box = calc_hash(lens)
-            boxes[box][lens] = int(focal_length)
-
-    print(boxes)
+        match op.strip("-").split("="):
+            case [lens, focal_length]:
+                boxes[calc_hash(lens)][lens] = int(focal_length)
+            case [lens]:
+                boxes[calc_hash(lens)].pop(lens, None)
 
     return calc_focusing_power(boxes)
 
