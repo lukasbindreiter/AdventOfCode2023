@@ -139,7 +139,7 @@ def compute_accepted_for_ranges(
     accepted = 0
     for rule in workflows[workflow].rules:
         true_branch, false_branch = split_range(
-            ranges[rule.comparison.prop], rule.comparison.value, rule.comparison.op
+            ranges[rule.comparison.prop], rule.comparison.op, rule.comparison.value
         )
         if true_branch:
             accepted += compute_accepted_for_ranges(
@@ -162,7 +162,7 @@ def compute_accepted_for_ranges(
     return accepted
 
 
-def split_range(r: range, value: int, op: str) -> tuple[range, range]:
+def split_range(r: range, op: str, value: int) -> tuple[range, range]:
     """
     Split a range into two ranges, a true and a false range.
 
@@ -225,12 +225,12 @@ def test_example_part2(example_input):
 
 
 def test_split_range():
-    assert split_range(range(1, 10), 5, "<") == (range(1, 5), range(5, 10))
-    assert split_range(range(5, 10), 5, "<") == (range(5, 5), range(5, 10))
-    assert split_range(range(5, 10), 4, "<") == (range(5, 5), range(5, 10))
-    assert split_range(range(5, 10), 11, "<") == (range(5, 10), range(10, 10))
+    assert split_range(range(1, 10), "<", 5) == (range(1, 5), range(5, 10))
+    assert split_range(range(5, 10), "<", 5) == (range(5, 5), range(5, 10))
+    assert split_range(range(5, 10), "<", 4) == (range(5, 5), range(5, 10))
+    assert split_range(range(5, 10), "<", 11) == (range(5, 10), range(10, 10))
 
-    assert split_range(range(1, 10), 5, ">") == (range(6, 10), range(1, 6))
-    assert split_range(range(5, 10), 5, ">") == (range(6, 10), range(5, 6))
-    assert split_range(range(5, 10), 4, ">") == (range(5, 10), range(5, 5))
-    assert split_range(range(5, 10), 10, ">") == (range(10, 10), range(5, 10))
+    assert split_range(range(1, 10), ">", 5) == (range(6, 10), range(1, 6))
+    assert split_range(range(5, 10), ">", 5) == (range(6, 10), range(5, 6))
+    assert split_range(range(5, 10), ">", 4) == (range(5, 10), range(5, 5))
+    assert split_range(range(5, 10), ">", 10) == (range(10, 10), range(5, 10))
